@@ -26,6 +26,7 @@ package com.dukescript.api.javafx.beans;
  * #L%
  */
 
+import io.micronaut.context.ApplicationContext;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.beans.BeanIntrospection;
 import io.micronaut.core.beans.BeanProperty;
@@ -48,7 +49,11 @@ import org.junit.Test;
 
 public class IntrospectedBeanTest {
     @Introspected
-    public static final class SampleComponent {
+    @OnChange
+    public static class SampleComponent {
+        public SampleComponent() {
+        }
+
         private boolean ok = true;
         private String fine = "ok";
         private final String immutable = "Hi";
@@ -83,6 +88,7 @@ public class IntrospectedBeanTest {
             this.ev = ev;
         }
 
+        @OnChange
         void noArgCallback() {
             counter++;
             this.ev = null;
@@ -108,21 +114,25 @@ public class IntrospectedBeanTest {
 
     @Test
     public void introspectionAccess() throws Exception {
-        SampleComponent bean = new SampleComponent();
+        try (ApplicationContext ac = ApplicationContext.run()) {
+            BeanIntrospection<SampleComponent> intro = BeanIntrospection.getIntrospection(SampleComponent.class);
 
-        BeanIntrospection<SampleComponent> intro = BeanIntrospection.getIntrospection(SampleComponent.class);
+            SampleComponent bean = ac.getBean(SampleComponent.class);
 
-        assertTrue("it's ok", bean.ok);
-        BeanProperty<SampleComponent, Boolean> okProperty = intro.getProperty("ok", boolean.class).get();
-        assertTrue("Read write", okProperty.isReadWrite());
+            assertTrue("it's ok", bean.ok);
+            BeanProperty<SampleComponent, Boolean> okProperty = intro.getProperty("ok", boolean.class).get();
+            assertTrue("Read write", okProperty.isReadWrite());
 
-        okProperty.set(bean, false);
-        assertFalse("no longer ok", bean.ok);
+            okProperty.set(bean, false);
+            assertFalse("no longer ok", bean.ok);
 
-        final BeanProperty<SampleComponent, Object> immutableProperty = intro.getProperty("immutable").get();
-        assertFalse("Read only, not write", immutableProperty.isReadWrite());
-        assertTrue("Read only", immutableProperty.isReadOnly());
-        assertEquals("Hi", immutableProperty.get(bean));
+            final BeanProperty<SampleComponent, Object> immutableProperty = intro.getProperty("immutable").get();
+            assertFalse("Read only, not write", immutableProperty.isReadWrite());
+            assertTrue("Read only", immutableProperty.isReadOnly());
+            assertEquals("Hi", immutableProperty.get(bean));
+
+            bean.noArgCallback();
+        }
     }
 
     @Test
