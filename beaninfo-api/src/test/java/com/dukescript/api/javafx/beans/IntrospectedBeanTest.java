@@ -26,11 +26,13 @@ package com.dukescript.api.javafx.beans;
  * #L%
  */
 
+import io.micronaut.core.annotation.Introspected;
+import io.micronaut.core.beans.BeanIntrospection;
+import io.micronaut.core.beans.BeanProperty;
+
 import java.util.Map;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -38,17 +40,39 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import net.java.html.json.Models;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public class IntrospectedBeanTest {
-    @FXBeanInfo.Generate
-    static class SampleComponent extends SampleComponentBeanInfo {
-        final BooleanProperty ok = new SimpleBooleanProperty(this, "ok", true);
-        final StringProperty fine = new SimpleStringProperty(this, "fine", "ok");
-        final String immutable = "Hi";
+    @Introspected
+    public static final class SampleComponent {
+        private boolean ok = true;
+        private String fine = "ok";
+        private final String immutable = "Hi";
+
+        public boolean isOk() {
+            return ok;
+        }
+
+        public void setOk(boolean ok) {
+            this.ok = ok;
+        }
+
+        public String getFine() {
+            return fine;
+        }
+
+        public void setFine(String fine) {
+            this.fine = fine;
+        }
+
+        public String getImmutable() {
+            return immutable;
+        }
+
         final EventHandlerProperty callback = new SimpleEventHandlerProperty(this::callback);
 
         private int counter;
@@ -83,6 +107,25 @@ public class IntrospectedBeanTest {
     }
 
     @Test
+    public void introspectionAccess() throws Exception {
+        SampleComponent bean = new SampleComponent();
+
+        BeanIntrospection<SampleComponent> intro = BeanIntrospection.getIntrospection(SampleComponent.class);
+
+        assertTrue("it's ok", bean.ok);
+        BeanProperty<SampleComponent, Boolean> okProperty = intro.getProperty("ok", boolean.class).get();
+        assertTrue("Read write", okProperty.isReadWrite());
+
+        okProperty.set(bean, false);
+        assertFalse("no longer ok", bean.ok);
+
+        final BeanProperty<SampleComponent, Object> immutableProperty = intro.getProperty("immutable").get();
+        assertFalse("Read only, not write", immutableProperty.isReadWrite());
+        assertTrue("Read only", immutableProperty.isReadOnly());
+        assertEquals("Hi", immutableProperty.get(bean));
+    }
+
+    @Test
     public void checkIntrospectedSampleComponent() throws Exception {
         final SampleComponent bean = new SampleComponent();
         final Object component = bean;
@@ -100,7 +143,7 @@ public class IntrospectedBeanTest {
         EventHandlerProperty callback = info.getActions().get("callback");
         assertNotNull("Callback is an action", callback);
 
-        ActionDataEvent ev = new ActionDataEvent(bean, this, 5);
+        ActionDataEvent ev = new ActionDataEvent(null, this, 5);
 
         assertEquals("No counter", 0, bean.counter);
         callback.getValue().handle(ev);
