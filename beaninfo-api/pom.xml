@@ -86,13 +86,6 @@
       </snapshotRepository>
   </distributionManagement>
 
-  <repositories>
-      <repository>
-          <id>netbeans</id>
-          <name>NetBeans</name>
-          <url>http://bits.netbeans.org/maven2/</url>
-      </repository>
-  </repositories>
   <build>
       <plugins>
           <plugin>
@@ -226,7 +219,7 @@
     <dependency>
         <groupId>org.netbeans.api</groupId>
         <artifactId>org-openide-util-lookup</artifactId>
-        <version>RELEASE82</version>
+        <version>RELEASE121</version>
         <scope>provided</scope>
     </dependency>
 

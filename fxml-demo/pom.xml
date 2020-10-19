@@ -70,17 +70,6 @@
         <tag>HEAD</tag>
     </scm>
     
-    <repositories>
-        <repository>
-            <id>nb</id>
-            <name>NetBeans</name>
-            <url>http://bits.netbeans.org/maven2/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <build>
         <plugins>
             <plugin>
@@ -174,7 +163,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
-            <version>RELEASE80</version>
+            <version>RELEASE121</version>
             <type>jar</type>
         </dependency>
         <dependency>
