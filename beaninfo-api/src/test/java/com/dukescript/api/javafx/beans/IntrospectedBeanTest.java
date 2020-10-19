@@ -45,6 +45,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 import org.junit.Test;
 
 public class IntrospectedBeanTest {
@@ -139,7 +140,7 @@ public class IntrospectedBeanTest {
     public void checkIntrospectedSampleComponent() throws Exception {
         final SampleComponent bean = new SampleComponent();
         final Object component = bean;
-        assertTrue("This is a model!", Models.isModel(component.getClass()));
+        assumeTrue("This is a model!", Models.isModel(component.getClass()));
         assertTrue("Provides bean info", component instanceof FXBeanInfo.Provider);
         FXBeanInfo.Provider p = (FXBeanInfo.Provider) component;
         FXBeanInfo info = p.getFXBeanInfo();
