@@ -26,6 +26,7 @@ package com.dukescript.demo.javafx.webui;
  * #L%
  */
 
+import io.micronaut.context.ApplicationContext;
 import java.util.List;
 import net.java.html.junit.BrowserRunner;
 import static org.junit.Assert.assertEquals;
@@ -38,12 +39,14 @@ import org.junit.Test;
 @RunWith(BrowserRunner.class)
 public class DataModelTest {
     @Test public void testUIModelWithoutUI() {
-        DataModel model = new DataModel();
-        model.message.set("Hello World!");
+        try (ApplicationContext ctx = ApplicationContext.run()) {
+            DataModel model = ctx.getBean(DataModel.class);
+            model.setMessage("Hello World!");
 
-        List<String> arr = model.words.getValue();
-        assertEquals("Six words always", arr.size(), 6);
-        assertEquals("Hello is the first word", "Hello", arr.get(0));
-        assertEquals("World is the second word", "World!", arr.get(1));
+            List<String> arr = model.getWords();
+            assertEquals("Six words always", arr.size(), 6);
+            assertEquals("Hello is the first word", "Hello", arr.get(0));
+            assertEquals("World is the second word", "World!", arr.get(1));
+        }
     }
 }

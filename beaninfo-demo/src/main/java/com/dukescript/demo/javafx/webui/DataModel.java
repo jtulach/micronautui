@@ -26,66 +26,85 @@ package com.dukescript.demo.javafx.webui;
  * #L%
  */
 
-import com.dukescript.api.javafx.beans.ActionDataEvent;
+import com.dukescript.api.javafx.beans.ObservableUI;
+import io.micronaut.context.ApplicationContext;
+import io.micronaut.core.annotation.Introspected;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import com.dukescript.api.javafx.beans.FXBeanInfo;
-import javafx.event.ActionEvent;
 import net.java.html.json.Models;
 
-@FXBeanInfo.Generate
-final class DataModel extends DataModelBeanInfo {
-    final ObjectProperty<String> message = new SimpleObjectProperty<>(this, "message");
-    final ObservableValue<List<String>> words = Bindings.createObjectBinding(() -> {
-        return words(message.get());
-    }, message);
-    final ListProperty<HistoryElement> history = new SimpleListProperty<>(this, "history", FXCollections.observableArrayList());
-    final BooleanProperty rotating = new SimpleBooleanProperty(this, "rotating");
-
+@ObservableUI
+@Introspected
+public class DataModel {
+    private String message;
+    private boolean rotating;
+    private List<HistoryElement> history = new ArrayList<>();
+    
+    
     public DataModel() {
-        message.addListener((observable, oldValue, newValue) -> {
-            history.add(new HistoryElement(newValue));
-        });
+//        message.addListener((observable, oldValue, newValue) -> {
+//            history.add(new HistoryElement(newValue));
+//        });
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public boolean isRotating() {
+        return rotating;
+    }
+
+    public void setRotating(boolean rotating) {
+        this.rotating = rotating;
+    }
+
+    public List<HistoryElement> getHistory() {
+        return history;
+    }
+
+    public void setHistory(List<HistoryElement> history) {
+        this.history = history;
+    }
+
+    public List<String> getWords() {
+        return words(getMessage());
+    }
+    
     final void turnAnimationOn() {
-        rotating.set(true);
+        setRotating(true);
     }
 
     final void turnAnimationOff() {
-        rotating.set(false);
+        setRotating(false);
     }
 
     final void rotate5s() {
-        rotating.set(true);
+        setRotating(true);
         java.util.Timer timer = new java.util.Timer("Rotates a while");
         timer.schedule(new java.util.TimerTask() {
             @Override
             public void run() {
-                rotating.set(false);
+                setRotating(false);
             }
         }, 5000);
     }
 
-    final void showScreenSize(ActionEvent ev) {
-        message.set("Screen size is unknown");
+    final void showScreenSize() {
+        setMessage("Screen size is unknown");
     }
 
-    final void removeFromHistory(ActionDataEvent event) {
-        HistoryElement h = event.getSource(HistoryElement.class);
+    final void removeFromHistory(Object event) {
+        HistoryElement h = null;//event.getSource(HistoryElement.class);
         history.remove(h);
-        if (Objects.equals(h.message, message.get())) {
-            message.set("Message has been removed from history");
+        if (Objects.equals(h.message, getMessage())) {
+            setMessage("Message has been removed from history");
         }
     }
 
@@ -102,17 +121,22 @@ final class DataModel extends DataModelBeanInfo {
      * Called when the page is ready.
      */
     static void onPageLoad() {
-        DataModel ui = new DataModel();
-        ui.message.set("Hello World from HTML and Java!");
+        ApplicationContext ac = ApplicationContext.run();
+        DataModel ui = ac.getBean(DataModel.class);
+        ui.setMessage("Hello World from HTML and Java!");
         Models.applyBindings(ui);
     }
 
-    @FXBeanInfo.Generate
-    static final class HistoryElement extends HistoryElementBeanInfo {
+    @Introspected
+    static final class HistoryElement {
         final String message;
 
         HistoryElement(String message) {
             this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
         }
     }
 }
