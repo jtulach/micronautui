@@ -1,5 +1,6 @@
 package com.dukescript.api.javafx.beans;
 
+import io.micronaut.context.annotation.Executable;
 import io.micronaut.core.annotation.Introspected;
 import javafx.event.ActionEvent;
 
@@ -40,11 +41,13 @@ public class SampleComponent {
         this.ev = ev;
     }
 
+    @Executable
     void noArgCallback() {
         counter++;
         this.ev = null;
     }
 
+    @Executable
     void actionCallback(ActionEvent ev) {
         counter++;
         this.ev = ev;
@@ -56,6 +59,7 @@ public class SampleComponent {
     this.ev = ev;
     }
      */
+    @Executable
     int notAnAction() {
         return 0;
     }

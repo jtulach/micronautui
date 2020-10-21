@@ -28,6 +28,7 @@ package com.dukescript.demo.javafx.webui;
 
 import com.dukescript.api.javafx.beans.ObservableUI;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.annotation.Executable;
 import io.micronaut.core.annotation.Introspected;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -82,15 +83,18 @@ public class DataModel {
         return words(getMessage());
     }
     
-    final void turnAnimationOn() {
+    @Executable
+    public void turnAnimationOn() {
         setRotating(true);
     }
 
-    final void turnAnimationOff() {
+    @Executable
+    public void turnAnimationOff() {
         setRotating(false);
     }
 
-    final void rotate5s() {
+    @Executable
+    public void rotate5s() {
         setRotating(true);
         java.util.Timer timer = new java.util.Timer("Rotates a while");
         timer.schedule(new java.util.TimerTask() {
@@ -101,7 +105,8 @@ public class DataModel {
         }, 5000);
     }
 
-    final void showScreenSize() {
+    @Executable
+    public void showScreenSize() {
         setMessage("Screen size is unknown");
     }
 

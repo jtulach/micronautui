@@ -27,35 +27,49 @@ package com.dukescript.impl.javafx.beans;
  */
 
 import io.micronaut.aop.MethodInvocationContext;
+import io.micronaut.context.ApplicationContext;
 import io.micronaut.core.beans.BeanIntrospection;
 import io.micronaut.core.beans.BeanProperty;
+import io.micronaut.inject.BeanDefinition;
+import io.micronaut.inject.ExecutableMethod;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import net.java.html.BrwsrCtx;
 import org.netbeans.html.json.spi.Proto;
 
 final class MicroHtml4Java<T> extends Proto.Type<T> {
     private final BeanIntrospection<T> intro;
+    private final List<ExecutableMethod<T, ?>> methods;
     private static final Map<Class<?>,MicroHtml4Java> TYPES = new HashMap<>();
 
     synchronized static <T> MicroHtml4Java<T> find(T bean, Class<T> clazz, BeanIntrospection<T> intro) {
         MicroHtml4Java<T> data = TYPES.get(clazz);
         if (data == null) {
-            final Collection<BeanProperty<T, Object>> props = intro.getBeanProperties();
-            data = new MicroHtml4Java(intro, bean.getClass(), clazz, props.size(), 0);
-            int i = 0;
-            for (BeanProperty<T, Object> p : props) {
-                data.registerProperty(p.getName(), i++, p.isReadOnly());
+            try (ApplicationContext ac = ApplicationContext.run()) {
+                final Collection<BeanProperty<T, Object>> props = intro.getBeanProperties();
+                final BeanDefinition<T> def = ac.getBeanDefinition(intro.getBeanType());
+                final Collection<ExecutableMethod<T, ?>> methods = def.getExecutableMethods();
+                data = new MicroHtml4Java(intro, bean.getClass(), clazz, props.size(), methods);
+                int i = 0;
+                for (BeanProperty<T, Object> p : props) {
+                    data.registerProperty(p.getName(), i++, p.isReadOnly());
+                }
+                i = 0;
+                for (ExecutableMethod<T, ?> m : methods) {
+                    data.registerFunction(m.getMethodName(), i++);
+                }
             }
-            TYPES.put(clazz, data);
         }
         return data;
     }
 
-    MicroHtml4Java(BeanIntrospection<T> intro, Class<? extends T> subclazz, Class<T> clazz, int props, int i) {
-        super(subclazz, clazz, props, i);
+    MicroHtml4Java(BeanIntrospection<T> intro, Class<? extends T> subclazz, Class<T> clazz, int props, Collection<ExecutableMethod<T, ?>> methods) {
+        super(subclazz, clazz, props, methods.size());
         this.intro = intro;
+        this.methods = new ArrayList<>(methods);
     }
 
     @Override
@@ -74,7 +88,18 @@ final class MicroHtml4Java<T> extends Proto.Type<T> {
 
     @Override
     protected void call(T model, int i, Object o, Object o1) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ExecutableMethod<T, ?> m = methods.get(i);
+        switch (m.getArguments().length) {
+            case 0:
+                m.invoke(model);
+                break;
+            case 1:
+                m.invoke(model, o);
+                break;
+            default:
+                m.invoke(model, o, o1);
+                break;
+        }
     }
 
     @Override
