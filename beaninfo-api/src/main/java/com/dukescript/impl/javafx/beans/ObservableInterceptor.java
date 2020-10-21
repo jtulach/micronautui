@@ -37,8 +37,12 @@ public final class ObservableInterceptor<T> implements MethodInterceptor<T, Obje
         BeanProperty<? extends Object, Object> prop = micro.findProperty(context, setterGetter);
         if (setterGetter[1]) {
             proto1.accessProperty(prop.getName());
+            proto1.acquireLock(prop.getName());
         }
         Object res = context.proceed();
+        if (setterGetter[1]) {
+            proto1.releaseLock();
+        }
         if (setterGetter[0]) {
             proto1.valueHasMutated(prop.getName());
         }
