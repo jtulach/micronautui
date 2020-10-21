@@ -98,7 +98,7 @@ final class MicroHtml4Java<T> extends Proto.Type<T> {
 
     @Override
     protected Proto protoFor(Object o) {
-        throw new UnsupportedOperationException("Who's: " + o);
+        return QueryProto.findFor(o);
     }
 
     final BeanProperty<T, Object> findProperty(MethodInvocationContext<T, Object> context, boolean[] setterGetter) {

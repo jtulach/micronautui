@@ -49,6 +49,11 @@ public class DataModel {
 //        });
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+    
     public String getMessage() {
         return message;
     }
@@ -128,7 +133,8 @@ public class DataModel {
     }
 
     @Introspected
-    static final class HistoryElement {
+    @ObservableUI
+    static class HistoryElement {
         final String message;
 
         HistoryElement(String message) {
@@ -137,6 +143,11 @@ public class DataModel {
 
         public String getMessage() {
             return message;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return super.equals(obj);
         }
     }
 }

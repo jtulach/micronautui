@@ -62,5 +62,11 @@ public class SampleComponent {
 
     static void ignore() {
     }
-    
+
+    @Override
+    public boolean equals(Object obj) {
+        // MicroHack: Need a way for a bean to find out one of its interceptors
+        // MicroHack: Using equals(QueryProto) trick
+        return super.equals(obj);
+    }
 }

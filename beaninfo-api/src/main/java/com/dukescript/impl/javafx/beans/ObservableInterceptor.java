@@ -20,13 +20,18 @@ public final class ObservableInterceptor<T> implements MethodInterceptor<T, Obje
         if (proto == null) {
             BeanIntrospection<T> intro = BeanIntrospection.getIntrospection(type);
             micro = MicroHtml4Java.find(bean, type, intro);
-            proto = micro.createProto(bean, BrwsrCtx.EMPTY);
+            proto = micro.createProto(bean, BrwsrCtx.findDefault(type));
         }
         return proto;
     }
 
     @Override
     public Object intercept(MethodInvocationContext<T, Object> context) {
+        QueryProto qp = QueryProto.handleEqualsQuery(context);
+        if (qp != null) {
+            qp.assignProto(proto);
+            return true;
+        }
         boolean[] setterGetter = { false, false };
         final Proto proto1 = proto(context.getDeclaringType(), context.getTarget());
         BeanProperty<? extends Object, Object> prop = micro.findProperty(context, setterGetter);
