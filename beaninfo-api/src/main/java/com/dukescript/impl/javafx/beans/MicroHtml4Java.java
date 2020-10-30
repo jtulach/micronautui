@@ -28,6 +28,7 @@ package com.dukescript.impl.javafx.beans;
 
 import io.micronaut.aop.MethodInvocationContext;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.BeanContext;
 import io.micronaut.core.beans.BeanIntrospection;
 import io.micronaut.core.beans.BeanProperty;
 import io.micronaut.inject.BeanDefinition;
@@ -45,22 +46,20 @@ final class MicroHtml4Java<T> extends Proto.Type<T> {
     private final List<ExecutableMethod<T, ?>> methods;
     private static final Map<Class<?>,MicroHtml4Java> TYPES = new HashMap<>();
 
-    synchronized static <T> MicroHtml4Java<T> find(T bean, Class<T> clazz, BeanIntrospection<T> intro) {
+    synchronized static <T> MicroHtml4Java<T> find(BeanContext context, T bean, Class<T> clazz, BeanIntrospection<T> intro) {
         MicroHtml4Java<T> data = TYPES.get(clazz);
         if (data == null) {
-            try (ApplicationContext ac = ApplicationContext.run()) {
-                final Collection<BeanProperty<T, Object>> props = intro.getBeanProperties();
-                final BeanDefinition<T> def = ac.getBeanDefinition(intro.getBeanType());
-                final Collection<ExecutableMethod<T, ?>> methods = def.getExecutableMethods();
-                data = new MicroHtml4Java(intro, bean.getClass(), clazz, props.size(), methods);
-                int i = 0;
-                for (BeanProperty<T, Object> p : props) {
-                    data.registerProperty(p.getName(), i++, p.isReadOnly());
-                }
-                i = 0;
-                for (ExecutableMethod<T, ?> m : methods) {
-                    data.registerFunction(m.getMethodName(), i++);
-                }
+            final Collection<BeanProperty<T, Object>> props = intro.getBeanProperties();
+            final BeanDefinition<T> def = context.getBeanDefinition(intro.getBeanType());
+            final Collection<ExecutableMethod<T, ?>> methods = def.getExecutableMethods();
+            data = new MicroHtml4Java(intro, bean.getClass(), clazz, props.size(), methods);
+            int i = 0;
+            for (BeanProperty<T, Object> p : props) {
+                data.registerProperty(p.getName(), i++, p.isReadOnly());
+            }
+            i = 0;
+            for (ExecutableMethod<T, ?> m : methods) {
+                data.registerFunction(m.getMethodName(), i++);
             }
         }
         return data;

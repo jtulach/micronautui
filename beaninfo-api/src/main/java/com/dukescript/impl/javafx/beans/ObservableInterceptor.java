@@ -2,9 +2,11 @@ package com.dukescript.impl.javafx.beans;
 
 import io.micronaut.aop.MethodInterceptor;
 import io.micronaut.aop.MethodInvocationContext;
+import io.micronaut.context.BeanContext;
 import io.micronaut.context.annotation.Prototype;
 import io.micronaut.core.beans.BeanIntrospection;
 import io.micronaut.core.beans.BeanProperty;
+import javax.inject.Inject;
 import net.java.html.BrwsrCtx;
 import org.netbeans.html.json.spi.Proto;
 
@@ -12,6 +14,8 @@ import org.netbeans.html.json.spi.Proto;
 public final class ObservableInterceptor<T> implements MethodInterceptor<T, Object> {
     Proto proto;
     MicroHtml4Java<T> micro;
+    @Inject
+    private BeanContext context;
     
     public ObservableInterceptor() {
     }
@@ -19,7 +23,7 @@ public final class ObservableInterceptor<T> implements MethodInterceptor<T, Obje
     private Proto proto(Class<T> type, T bean) {
         if (proto == null) {
             BeanIntrospection<T> intro = BeanIntrospection.getIntrospection(type);
-            micro = MicroHtml4Java.find(bean, type, intro);
+            micro = MicroHtml4Java.find(context, bean, type, intro);
             proto = micro.createProto(bean, BrwsrCtx.findDefault(type));
         }
         return proto;
