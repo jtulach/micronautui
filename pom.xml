@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
-  DukeScript JavaFX Extensions - a library from the "DukeScript" project.
+  MicronautUI - a library from the Micronaut project
   %%
-  Copyright (C) 2018 Dukehoff GmbH
+  Copyright (C) 2020 OracleLabs
   %%
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -28,21 +28,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">  
     <modelVersion>4.0.0</modelVersion>
     
-    <name>DukeScript JavaFX Extensions</name>
-    <groupId>com.dukescript.javafx</groupId>
+    <name>MicronautUI</name>
+    <groupId>io.micronaut.ui</groupId>
     <artifactId>pom</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <url>http://dukescript.com</url>
-    <description>Extensions and Demos for JavaFX</description>
+    <url>http://micronaut.io</url>
+    <description>Micronaut UI Framework</description>
     
     <developers>
         <developer>
-            <id>monacotoni</id>
-            <name>Anton Epple</name>
-            <email>toni.epple@dukescript.com</email>
-            <organization>Dukehoff GmbH</organization>
-            <organizationUrl>http://www.dukescript.com</organizationUrl>
+            <id>jtulach</id>
+            <name>Jaroslav Tulach</name>
+            <email>jaroslav.tulach@oracle.com</email>
+            <organization>OracleLabs</organization>
+            <organizationUrl>http://www.graalvm.org</organizationUrl>
             <roles>
                 <role>Project-Administrator</role>
                 <role>Developer</role>
@@ -67,18 +67,16 @@
     </properties>
    
     <scm>
-        <connection>scm:git:https://github.com/dukescript/dukescript-javafx.git</connection>
-        <url>https://github.com/dukescript/dukescript-javafx.git</url>
-        <developerConnection>scm:git:https://github.com/dukescript/dukescript-javafx.git</developerConnection>
+        <connection>scm:git:https://github.com/jtulach/micronautui.git</connection>
+        <url>https://github.com/jtulach/micronautui</url>
+        <developerConnection>scm:git:https://github.com/jtulach/micronautui.git</developerConnection>
         <tag>release-${releaseVersion}</tag>
     </scm>
     
     <modules>
-        <module>javafx-base</module>
-        <module>beaninfo-api</module>
-        <module>beaninfo-demo</module>
-        <module>beaninfo-testing</module>
-        <module>beaninfo-embedded</module>
+        <module>micronautui-api</module>
+        <module>micronautui-demo</module>
+        <module>micronautui-testing</module>
     </modules>
     
     <distributionManagement>
@@ -89,14 +87,39 @@
     </distributionManagement>
     
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.frgaal</groupId>
+                            <artifactId>compiler-maven-plugin</artifactId>
+                            <version>14.0.2</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <compilerId>frgaal</compilerId>
+                        <source>14</source>
+                        <target>1.8</target>
+                        <compilerArgs>
+                            <arg>-Xlint:deprecation</arg>
+                            <arg>--enable-safe-preview</arg>
+                        </compilerArgs>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>license-maven-plugin</artifactId>
-                <version>1.16</version>
+                <version>2.0.0</version>
                 <configuration>
-                    <inceptionYear>2018</inceptionYear>
-                    <organizationName>Dukehoff GmbH</organizationName>
+                    <inceptionYear>2020</inceptionYear>
+                    <organizationName>OracleLabs</organizationName>
                     <licenseName>mit</licenseName>
                     <failOnMissingHeader>true</failOnMissingHeader>
                     <descriptionTemplate>src/license/header.txt</descriptionTemplate>
@@ -129,15 +152,4 @@
             </plugin>
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>jdk8</id>
-            <activation>
-                <jdk>1.8</jdk>
-            </activation>
-            <modules>
-                <module>fxml-demo</module>
-            </modules>
-        </profile>
-    </profiles>
 </project>

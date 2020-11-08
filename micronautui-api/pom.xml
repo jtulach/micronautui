@@ -1,0 +1,324 @@
+<?xml version="1.0"?>
+<!--
+  #%L
+  Micronaut UI API - a library from the Micronaut project
+  %%
+  Copyright (C) 2020 OracleLabs
+  %%
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+  
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+  
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  THE SOFTWARE.
+  #L%
+  -->
+
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>io.micronaut.ui</groupId>
+  <artifactId>api</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>bundle</packaging>
+  <url>http://micronaut.io</url>
+  <name>Micronaut UI API</name>
+  <description>Extensions to use Micronaut concepts when developing UIs</description>
+
+  <developers>
+      <developer>
+          <id>jtulach</id>
+          <name>Jaroslav Tulach</name>
+          <email>jaroslav.tulach@oracle.com</email>
+          <organization>OracleLabs</organization>
+          <organizationUrl>http://www.graalvm.org</organizationUrl>
+          <roles>
+              <role>Project-Administrator</role>
+              <role>Developer</role>
+          </roles>
+          <timezone>+1</timezone>
+      </developer>
+  </developers>
+
+  <licenses>
+      <license>
+          <name>MIT</name>
+          <url>https://opensource.org/licenses/MIT</url>
+          <comments>
+              The API is free to use with the MIT license.
+          </comments>
+      </license>
+  </licenses>
+
+  <scm>
+      <connection>scm:git:https://github.com/jtulach/micronautui.git</connection>
+      <url>https://github.com/jtulach/micronautui</url>
+      <developerConnection>scm:git:https://github.com/jtulach/micronautui.git</developerConnection>
+      <tag>release-${releaseVersion}</tag>
+  </scm>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <net.java.html.version>1.7</net.java.html.version>
+    <publicPackages>io.micronaut.ui</publicPackages>
+  </properties>
+
+  <distributionManagement>
+      <repository>
+          <id>release</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      </repository>
+      <snapshotRepository>
+          <id>ossrh</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      </snapshotRepository>
+  </distributionManagement>
+
+  <build>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.felix</groupId>
+              <artifactId>maven-bundle-plugin</artifactId>
+              <version>2.4.0</version>
+              <extensions>true</extensions>
+              <configuration>
+                  <instructions>
+                      <Export-Package>${publicPackages},META-INF.services.*;-noimport:=true;-split-package:=first</Export-Package>
+                      <Bundle-SymbolicName>io.micronaut.ui</Bundle-SymbolicName>
+                  </instructions>
+              </configuration>
+          </plugin>
+          <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>license-maven-plugin</artifactId>
+              <version>2.0.0</version>
+              <configuration>
+                  <inceptionYear>2020</inceptionYear>
+                  <organizationName>OracleLabs</organizationName>
+                  <licenseName>mit</licenseName>
+                  <failOnMissingHeader>true</failOnMissingHeader>
+                  <descriptionTemplate>src/license/header.txt</descriptionTemplate>
+                  <acceptPomPackaging>true</acceptPomPackaging>
+                  <roots>
+                      <root>.</root>
+                  </roots>
+                  <excludes>
+                      <exclude>**/target/**</exclude>
+                      <exclude>**/.gradle/**</exclude>
+                  </excludes>
+              </configuration>
+              <executions>
+                  <execution>
+                      <id>validate-headers</id>
+                      <phase>site</phase>
+                      <goals>
+                          <goal>check-file-header</goal>
+                      </goals>
+                  </execution>
+              </executions>
+          </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>2.3.2</version>
+              <configuration>
+                  <source>1.8</source>
+                  <target>1.8</target>
+                  <testSource>1.8</testSource>
+                  <testTarget>1.8</testTarget>
+              </configuration>
+          </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <version>3.0.1</version>
+              <configuration>
+                  <offlineLinks>
+                      <offlineLink>
+                          <url>https://docs.oracle.com/javase/8/javafx/api/</url>
+                          <location>https://docs.oracle.com/javase/8/javafx/api/</location>
+                      </offlineLink>
+                  </offlineLinks>
+                  <doclet>org.apidesign.javadoc.codesnippet.Doclet</doclet>
+                  <docletArtifact>
+                      <groupId>org.apidesign.javadoc</groupId>
+                      <artifactId>codesnippet-doclet</artifactId>
+                      <version>0.30</version>
+                  </docletArtifact>
+                  <additionalOptions>
+                      <additionalparam>-snippetpath src/test/</additionalparam>
+                      <additionalparam>-snippetpath ../micronautui-embedded/src/main/</additionalparam>
+                      <additionalparam>-snippetpath ../micronautui-testing/app/src/main/</additionalparam>
+                      <additionalparam>-hiddingannotation java.lang.Deprecated</additionalparam>
+                  </additionalOptions>
+              </configuration>
+          </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <version>2.19.1</version>
+              <configuration>
+                  <junitArtifactName>com.dukescript.api:junit-osgi</junitArtifactName>
+                  <systemPropertyVariables>
+                      <fxpresenter.headless>true</fxpresenter.headless>
+                  </systemPropertyVariables>
+              </configuration>
+          </plugin>
+          <plugin>
+              <groupId>org.sonatype.plugins</groupId>
+              <artifactId>nexus-staging-maven-plugin</artifactId>
+              <version>1.6.3</version>
+              <extensions>true</extensions>
+              <configuration>
+                  <serverId>ossrh</serverId>
+                  <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                  <autoReleaseAfterClose>true</autoReleaseAfterClose>
+              </configuration>
+          </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-release-plugin</artifactId>
+              <version>2.4</version>
+              <configuration>
+                  <localCheckout>true</localCheckout>
+                  <pushChanges>false</pushChanges>
+                  <useReleaseProfile>false</useReleaseProfile>
+                  <arguments>-Pjvnet-release -Pgpg</arguments>
+                  <tag>release-${releaseVersion}</tag>
+              </configuration>
+          </plugin>
+          <plugin>
+              <groupId>org.netbeans.tools</groupId>
+              <artifactId>sigtest-maven-plugin</artifactId>
+              <version>1.1</version>
+              <executions>
+                  <execution>
+                      <goals>
+                          <!--
+                          <goal>compare</goal>
+                                                    -->
+                          <goal>generate</goal>
+                      </goals>
+                  </execution>
+              </executions>
+              <configuration>
+                  <releaseVersion>0.6</releaseVersion>
+                  <packages>io.micronaut.ui</packages>
+              </configuration>
+          </plugin>
+      </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+        <groupId>org.netbeans.html</groupId>
+        <artifactId>net.java.html.json</artifactId>
+        <version>${net.java.html.version}</version>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.netbeans.html</groupId>
+        <artifactId>net.java.html.boot</artifactId>
+        <version>${net.java.html.version}</version>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.netbeans.html</groupId>
+        <artifactId>ko4j</artifactId>
+        <version>${net.java.html.version}</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.netbeans.html</groupId>
+        <artifactId>net.java.html.boot.fx</artifactId>
+        <version>${net.java.html.version}</version>
+        <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.netbeans.api</groupId>
+        <artifactId>org-openide-util-lookup</artifactId>
+        <version>RELEASE121</version>
+        <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>com.dukescript.api</groupId>
+        <artifactId>junit-osgi</artifactId>
+        <scope>test</scope>
+        <version>4.12</version>
+    </dependency>
+    <dependency>
+        <groupId>com.dukescript.api</groupId>
+        <artifactId>junit-browser-runner</artifactId>
+        <scope>test</scope>
+        <version>1.0</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apidesign.bck2brwsr</groupId>
+        <artifactId>core</artifactId>
+        <scope>test</scope>
+        <version>0.30</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.10.19</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.micronaut</groupId>
+      <artifactId>micronaut-core</artifactId>
+      <version>2.1.0</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>io.micronaut</groupId>
+      <artifactId>micronaut-aop</artifactId>
+      <version>2.1.0</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>io.micronaut</groupId>
+      <artifactId>micronaut-inject-java</artifactId>
+      <version>2.1.0</version>
+      <type>jar</type>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+  <profiles>
+      <profile>
+          <id>release</id>
+          <build>
+              <plugins>
+                  <plugin>
+                      <groupId>org.apache.maven.plugins</groupId>
+                      <artifactId>maven-gpg-plugin</artifactId>
+                      <version>1.5</version>
+                      <executions>
+                          <execution>
+                              <id>sign-artifacts</id>
+                              <phase>verify</phase>
+                              <goals>
+                                  <goal>sign</goal>
+                              </goals>
+                          </execution>
+                      </executions>
+                  </plugin>
+              </plugins>
+          </build>
+      </profile>
+  </profiles>
+</project>

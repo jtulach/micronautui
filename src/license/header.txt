@@ -1,1 +1,1 @@
-${projectName} - a library from the "DukeScript" project.
+${projectName} - a library from the Micronaut project

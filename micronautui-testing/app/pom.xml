@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  MicronautUI - a library from the Micronaut project
+  %%
+  Copyright (C) 2020 OracleLabs
+  %%
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+  
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+  
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  THE SOFTWARE.
+  #L%
+  -->
+
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.micronaut.ui</groupId>
+        <artifactId>testing</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <name>Micronaut UI Testing Application</name>
+    <artifactId>tests</artifactId>
+    <packaging>bundle</packaging>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.4.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>io.micronaut.ui.tests</Export-Package>
+                        <Bundle-SymbolicName>io.micronaut.ui.tests</Bundle-SymbolicName>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>net.orfjackal.retrolambda</groupId>
+                <artifactId>retrolambda-maven-plugin</artifactId>
+                <version>2.5.5</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>commons-lang3</artifactId>
+                        <version>3.8.1</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>process-main</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <target>1.6</target>
+                    <defaultMethods>true</defaultMethods>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19.1</version>
+                <configuration>
+                    <junitArtifactName>com.dukescript.api:junit-osgi</junitArtifactName>
+                    <systemPropertyVariables>
+                        <fxpresenter.headless>true</fxpresenter.headless>
+                    </systemPropertyVariables>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <id>default-test</id>
+                        <phase>test</phase>
+                        <configuration>
+                            <classpathDependencyExcludes>
+                                <exclude>com.dukescript.presenters:webkit</exclude>
+                            </classpathDependencyExcludes>
+                        </configuration>
+                    </execution>
+                    <!--
+                    <execution>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <id>webkit-test</id>
+                        <phase>test</phase>
+                        <configuration>
+                            <classpathDependencyExcludes>
+                                <exclude>org.netbeans.html:net.java.html.boot.fx</exclude>
+                            </classpathDependencyExcludes>
+                        </configuration>
+                    </execution>
+                                -->
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>io.micronaut.ui</groupId>
+            <artifactId>api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micronaut</groupId>
+            <artifactId>micronaut-inject-java</artifactId>
+            <version>2.1.0</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.html</groupId>
+            <artifactId>net.java.html.json</artifactId>
+            <version>${net.java.html.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.dukescript.api</groupId>
+            <artifactId>junit-osgi</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dukescript.api</groupId>
+            <artifactId>junit-browser-runner</artifactId>
+        </dependency>
+        <!-- run tests in JavaFX WebView -->
+        <dependency>
+            <groupId>org.netbeans.html</groupId>
+            <artifactId>net.java.html.boot.fx</artifactId>
+            <version>${net.java.html.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>11</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- run tests in a webkit presenter -->
+        <dependency>
+            <groupId>com.dukescript.presenters</groupId>
+            <artifactId>webkit</artifactId>
+            <version>${presenters.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
