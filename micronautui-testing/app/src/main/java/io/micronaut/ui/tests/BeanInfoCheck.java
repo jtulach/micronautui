@@ -86,9 +86,9 @@ public class BeanInfoCheck {
     }
     
     private static <D> ExecutableMethod<? extends D, ?> find(BeanDefinition<D> def, String n) {
-        for (var i : def.getExecutableMethods()) {
-            if (i.getName().equals(n)) {
-                return i;
+        for (ExecutableMethod<D, ?> method : def.getExecutableMethods()) {
+            if (method.getName().equals(n)) {
+                return method;
             }
         }
         fail("Method " + n + " not found in " + def);

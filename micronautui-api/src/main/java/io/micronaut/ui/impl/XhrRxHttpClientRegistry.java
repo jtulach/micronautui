@@ -26,21 +26,27 @@ package io.micronaut.ui.impl;
  * #L%
  */
 
-import io.micronaut.context.ApplicationContext;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.netbeans.html.json.spi.Proto;
+import io.micronaut.context.annotation.Factory;
+import io.micronaut.core.annotation.AnnotationMetadata;
+import io.micronaut.http.HttpVersion;
+import io.micronaut.http.client.RxHttpClient;
+import io.micronaut.http.client.RxHttpClientRegistry;
 
-public class QueryProtoTest {
-    @Test
-    public void findProtoForABean() {
-        try (ApplicationContext ctx = ApplicationContext.run()) {
-            SampleComponent c = ctx.getBean(SampleComponent.class);
-            c.setFine("Great!");
-            
-            Proto p = QueryProto.findFor(c);
-            assertNotNull("Proto for c found", p);
-        }
+@Factory
+public class XhrRxHttpClientRegistry implements RxHttpClientRegistry {
+    @Override
+    public RxHttpClient getClient(HttpVersion httpVersion, String clientId, String path) {
+        XhrConnection key = new XhrConnection(clientId, path, httpVersion);
+        return new XhrRxHttpClient(key);
     }
-    
+
+    @Override
+    public RxHttpClient getClient(AnnotationMetadata annotationMetadata) {
+        final XhrConnection key = XhrConnection.findConnection(annotationMetadata);
+        return new XhrRxHttpClient(key);
+    }
+
+    @Override
+    public void disposeClient(AnnotationMetadata annotationMetadata) {
+    }
 }

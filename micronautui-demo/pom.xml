@@ -210,6 +210,12 @@
       <version>${project.version}</version>
       <type>jar</type>
     </dependency>
+    <dependency>
+      <groupId>io.micronaut</groupId>
+      <artifactId>micronaut-http-client-core</artifactId>
+      <version>2.1.2</version>
+      <type>jar</type>
+    </dependency>
   </dependencies>
   <profiles>
       <profile>

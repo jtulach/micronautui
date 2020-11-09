@@ -26,21 +26,27 @@ package io.micronaut.ui.impl;
  * #L%
  */
 
-import io.micronaut.context.ApplicationContext;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.netbeans.html.json.spi.Proto;
+import io.micronaut.core.annotation.AnnotationMetadata;
+import io.micronaut.http.HttpVersion;
+import io.micronaut.http.client.annotation.Client;
 
-public class QueryProtoTest {
-    @Test
-    public void findProtoForABean() {
-        try (ApplicationContext ctx = ApplicationContext.run()) {
-            SampleComponent c = ctx.getBean(SampleComponent.class);
-            c.setFine("Great!");
-            
-            Proto p = QueryProto.findFor(c);
-            assertNotNull("Proto for c found", p);
-        }
+final class XhrConnection {
+    static final XhrConnection DEFAULT_CLIENT_KEY = new XhrConnection(null, null, HttpVersion.HTTP_1_1);
+    final String id;
+    final String path;
+    final HttpVersion httpVersion;
+
+    XhrConnection(String id, String path, HttpVersion httpVersion) {
+        this.id = id;
+        this.path = path;
+        this.httpVersion = httpVersion;
     }
-    
+
+    static XhrConnection findConnection(AnnotationMetadata annotationMetadata) {
+        String id = annotationMetadata.stringValue(Client.class).orElse(null);
+        String path = annotationMetadata.stringValue(Client.class, "path").orElse(null);
+        HttpVersion httpVersion = annotationMetadata.enumValue(Client.class, "httpVersion", HttpVersion.class).orElse(HttpVersion.HTTP_1_1);
+        return new XhrConnection(id, path, httpVersion);
+    }
+
 }
