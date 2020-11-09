@@ -12,10 +12,10 @@ package io.micronaut.ui.demo;
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,18 +27,23 @@ package io.micronaut.ui.demo;
  */
 
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.BeanContext;
 import io.micronaut.context.annotation.Executable;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.ui.ObservableUI;
 import java.util.List;
+import javax.inject.Inject;
 import net.java.html.json.Models;
 import static net.java.html.json.Models.applyBindings;
 
 @ObservableUI
 @Introspected
 public class Demo {
+    @Inject
+    private BeanContext ctx;
+
     private String desc;
-    private List<String> todos = Models.asList();
+    private List<Item> todos = Models.asList();
 
     public String getDesc() {
         return desc;
@@ -52,11 +57,11 @@ public class Demo {
         return getDesc() == null || getDesc().length() == 0;
     }
 
-    public List<String> getTodos() {
+    public List<Item> getTodos() {
         return todos;
     }
 
-    public void setTodos(List<String> todos) {
+    public void setTodos(List<Item> todos) {
         this.todos = todos;
     }
 
@@ -78,7 +83,10 @@ public class Demo {
 
     @Executable
     void addTodo() {
-        getTodos().add(desc);
+        final Item item = ctx.createBean(Item.class);
+        item.setTitle(desc);
+        item.setDone(false);
+        getTodos().add(item);
         // XXX: ugly refresh...
         setTodos(getTodos());
         setDesc("");
