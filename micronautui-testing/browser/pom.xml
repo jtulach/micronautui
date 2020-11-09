@@ -101,6 +101,7 @@
                 <version>2.18.1</version>
                 <configuration>
                     <junitArtifactName>com.dukescript.api:junit-osgi</junitArtifactName>
+                    <skipTests>true</skipTests>
                 </configuration>
             </plugin>
         </plugins>
