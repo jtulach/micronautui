@@ -27,31 +27,53 @@
 
 <html>
     <head>
-        <title></title>
+        <title>Micronaut UI Demo</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="index.css">
+        <link rel="stylesheet" href="materialize.min.css">
+        <script src="materialize.min.js"></script>
     </head>
     <body>
-        <h1>Words Demo</h1>
-        <input data-bind="textInput:  message">
-        <br>
-        <button data-bind="enable: !rotating(), click: $root.turnAnimationOn">Start</button>
-        <button data-bind="enable: rotating, click: $root.turnAnimationOff">Stop</button>
-        <button data-bind="enable: !rotating(), click: $root.rotate5s">Rotate Few Seconds</button>
-        <button data-bind="click: $root.showScreenSize">Screen Size!</button>
-
-        <div id="scene">
-            <span id="words" data-bind="foreach: words">
-                <span data-bind="text: $data, css: { 'rotate' : $root.rotating } "></span>
-            </span>
+        <div class="navbar-fixed">
+            <nav>
+                <div class="naí-wrapper" >
+                    <a href="#" class="brand-logo center">Micronaut UI Demo</a>
+                    <ul id="nav-mobile" class="right hide-on-med-and-down">
+                        <li><a target="_blank" href="https://micronaut.io">Micronaut</a></li>
+                        <li><a target="_blank" href="https://bits.netbeans.org/html+java/1.7/">HTML/Java API</a></li>
+                        <li><a target="_blank" href="https://materializecss.com/">Materialize CSS</a></li>
+                    </ul>
+                </div>
+            </nav>
         </div>
-
-        <h3>History</h3>
-        <ul data-bind="foreach: history">
-            <li>
-                <span data-bind="text: message"></span>
-                (<a href="#" data-bind="click: $root.removeFromHistory">remove</a>)
-            </li>
-        </ul>
+        <div class="row">
+            <form class="col s6" data-bind="submit: addTodo">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <label for="key">New Todo:</label>
+                        <input id="key" type="text" data-bind="textInput: desc" placeholder="Enter a task"/>
+                        <a data-bind="click: addTodo, css: { disabled : emptyDesc }" class="waves-effect waves-light btn">Add</a>
+                    </div>
+                </div>
+            </form>
+            <div class="col s6">
+                <div class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                        <span class="card-title">TODO Example</span>
+                        <p>Demo application to manage your TODOs.
+                            There is <span data-bind="text: numTodos"></span>
+                            TODOs so far.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <ul class="col s12 collection" data-bind='foreach: todos'>
+                <li class="collection-item">
+                    <span data-bind="text: $data"></span>
+                </li>
+            </ul>
+        </div>
+        <!-- ${browser.bootstrap} -->
     </body>
 </html>
