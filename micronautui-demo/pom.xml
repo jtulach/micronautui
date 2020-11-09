@@ -200,7 +200,6 @@
     <dependency>
         <groupId>io.micronaut</groupId>
         <artifactId>micronaut-inject-java</artifactId>
-        <version>2.1.0</version>
         <type>jar</type>
         <scope>provided</scope>
     </dependency>
@@ -213,7 +212,6 @@
     <dependency>
       <groupId>io.micronaut</groupId>
       <artifactId>micronaut-http-client-core</artifactId>
-      <version>2.1.2</version>
       <type>jar</type>
     </dependency>
   </dependencies>
