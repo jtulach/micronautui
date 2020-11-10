@@ -116,6 +116,8 @@ public final class XhrRxHttpClient implements RxHttpClient {
             List<O> res = new ArrayList<>();
             for (int i = 0; i < json.length; i++) {
                 O bean;
+                // XXX: Need wrapper when @ObservableUI is used
+                // otherwise plain bean is enough
                 try {
                     bean = ctx.createBean(beanType);
                 } catch (Exception ex) {
