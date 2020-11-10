@@ -48,15 +48,31 @@ public final class XhrRxHttpClient implements RxHttpClient {
         this.conn = connection;
     }
 
-    private static final class Response<O> extends Flowable<HttpResponse<O>> {
+    private final class Response<I, O, E> extends Flowable<HttpResponse<O>> {
         private final List<Subscriber<? super HttpResponse<O>>> all = new CopyOnWriteArrayList<>();
+        private boolean initialized;
+        private final HttpRequest<I> request;
+        private final Argument<O> bodyType;
+        private final Argument<E> errorType;
 
-        Response(Argument<O> bodyType) {
+        Response(HttpRequest<I> request, Argument<O> bodyType, Argument<E> errorType) {
+            this.request = request;
+            this.bodyType = bodyType;
+            this.errorType = errorType;
         }
 
         @Override
         protected void subscribeActual(Subscriber<? super HttpResponse<O>> s) {
             all.add(s);
+            if (!initialized) {
+                initialized = true;
+                try {
+                    URI uri = new URI(conn.id).resolve(request.getPath());
+                    loadJSON(uri.toString(), this, request.getMethodName(), null, new String[0]);
+                } catch (URISyntaxException ex) {
+                    onError(ex);
+                }
+            }
         }
 
         void onError(Throwable t) {
@@ -74,14 +90,7 @@ public final class XhrRxHttpClient implements RxHttpClient {
 
     @Override
     public <I, O, E> Flowable<HttpResponse<O>> exchange(HttpRequest<I> request, Argument<O> bodyType, Argument<E> errorType) {
-        Response<O> r = new Response<>(bodyType);
-        try {
-            URI uri = new URI(conn.id).resolve(request.getPath());
-            loadJSON(uri.toString(), r, request.getMethodName(), null, new String[0]);
-        } catch (URISyntaxException ex) {
-            r.onError(ex);
-        }
-        return r;
+        return new Response<>(request, bodyType, errorType);
     }
 
     @JavaScriptBody(args = {"url", "done", "method", "data", "hp"}, javacall = true, body = ""
