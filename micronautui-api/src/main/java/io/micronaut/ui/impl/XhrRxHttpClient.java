@@ -12,10 +12,10 @@ package io.micronaut.ui.impl;
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -39,6 +39,7 @@ import io.reactivex.Flowable;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import net.java.html.js.JavaScriptBody;
@@ -98,17 +99,39 @@ public final class XhrRxHttpClient implements RxHttpClient {
                 onNext(response);
                 return;
             }
-            BeanIntrospection<O> intro = BeanIntrospection.getIntrospection(bodyType.getType());
-            O bean;
-            try {
-                bean = ctx.createBean(bodyType.getType());
-            } catch (Exception ex) {
-                bean = intro.instantiate();
+            Class<O> beanType;
+            Object[] json;
+            boolean firstOnly;
+            if (bodyType.isContainerType() && a3 instanceof Object[]) {
+                beanType = (Class<O>) bodyType.getTypeParameters()[0].getType();
+                json = (Object[]) a3;
+                firstOnly = false;
+            } else {
+                beanType = bodyType.getType();
+                json = new Object[] { a3 };
+                firstOnly = true;
             }
-            for (BeanProperty<O, Object> bp : intro.getBeanProperties()) {
-                bp.set(bean, readProperty(a3, bp.getName()));
+            BeanIntrospection<O> intro = BeanIntrospection.getIntrospection(beanType);
+
+            List<O> res = new ArrayList<>();
+            for (int i = 0; i < json.length; i++) {
+                O bean;
+                try {
+                    bean = ctx.createBean(beanType);
+                } catch (Exception ex) {
+                    bean = intro.instantiate();
+                }
+                for (BeanProperty<O, Object> bp : intro.getBeanProperties()) {
+                    bp.set(bean, readProperty(json[i], bp.getName()));
+                }
+                res.add(bean);
             }
-            onNext(HttpResponse.created(bean));
+            if (firstOnly) {
+                onNext(HttpResponse.created(res.get(0)));
+            } else {
+                final MutableHttpResponse response = HttpResponse.created(res);
+                onNext(response);
+            }
         }
     }
 

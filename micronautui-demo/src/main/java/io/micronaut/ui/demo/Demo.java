@@ -30,7 +30,11 @@ import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.BeanContext;
 import io.micronaut.context.annotation.Executable;
 import io.micronaut.core.annotation.Introspected;
+import io.micronaut.http.annotation.Get;
+import io.micronaut.http.client.annotation.Client;
 import io.micronaut.ui.ObservableUI;
+import io.reactivex.Flowable;
+import io.reactivex.disposables.Disposable;
 import java.util.List;
 import javax.inject.Inject;
 import net.java.html.json.Models;
@@ -41,6 +45,8 @@ import static net.java.html.json.Models.applyBindings;
 public class Demo {
     @Inject
     private BeanContext ctx;
+    @Inject
+    private TodoClient client;
 
     private String desc;
     private List<Item> todos = Models.asList();
@@ -90,6 +96,24 @@ public class Demo {
         // XXX: ugly refresh...
         setTodos(getTodos());
         setDesc("");
+    }
+
+    @Executable
+    void readTodos() {
+        Disposable[] subscribe = { null };
+        subscribe[0] = client.items().subscribe((newItems) -> {
+            getTodos().clear();
+            getTodos().addAll(newItems);
+            // XXX: ugly refresh...
+            setTodos(getTodos());
+            subscribe[0].dispose();
+        });
+    }
+
+    @Client("http://localhost:8080/todos/")
+    public interface TodoClient {
+        @Get
+        Flowable<List<Item>> items();
     }
 
     public static void onPageLoad() {
