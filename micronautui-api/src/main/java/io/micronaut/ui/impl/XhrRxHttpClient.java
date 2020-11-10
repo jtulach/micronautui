@@ -26,6 +26,9 @@ package io.micronaut.ui.impl;
  * #L%
  */
 
+import io.micronaut.context.BeanContext;
+import io.micronaut.core.beans.BeanIntrospection;
+import io.micronaut.core.beans.BeanProperty;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
@@ -43,9 +46,11 @@ import org.reactivestreams.Subscriber;
 
 public final class XhrRxHttpClient implements RxHttpClient {
     private final XhrConnection conn;
+    private final BeanContext ctx;
 
-    XhrRxHttpClient(XhrConnection connection) {
+    XhrRxHttpClient(XhrConnection connection, BeanContext ctx) {
         this.conn = connection;
+        this.ctx = ctx;
     }
 
     private final class Response<I, O, E> extends Flowable<HttpResponse<O>> {
@@ -85,6 +90,25 @@ public final class XhrRxHttpClient implements RxHttpClient {
             for (Subscriber<? super HttpResponse<O>> s : all) {
                 s.onNext(response);
             }
+        }
+
+        void notifySuccess(Object a2, Object a3) {
+            if (bodyType.equalsType(Argument.STRING)) {
+                final MutableHttpResponse response = HttpResponse.created(a2.toString());
+                onNext(response);
+                return;
+            }
+            BeanIntrospection<O> intro = BeanIntrospection.getIntrospection(bodyType.getType());
+            O bean;
+            try {
+                bean = ctx.createBean(bodyType.getType());
+            } catch (Exception ex) {
+                bean = intro.instantiate();
+            }
+            for (BeanProperty<O, Object> bp : intro.getBeanProperties()) {
+                bp.set(bean, readProperty(a3, bp.getName()));
+            }
+            onNext(HttpResponse.created(bean));
         }
     }
 
@@ -126,9 +150,14 @@ public final class XhrRxHttpClient implements RxHttpClient {
         String url, Response done, String method, String data, Object[] hp
     );
 
+    @JavaScriptBody(args = { "json", "name" }, body = ""
+        + "return json[name];\n"
+    )
+    native static Object readProperty(Object json, String name);
+
     static void notifySuccess(Object done, Object a2, Object a3) {
         Response r = (Response) done;
-        r.onNext(HttpResponse.created(a2.toString()));
+        r.notifySuccess(a2, a3);
     }
     static void notifyError(Object done, Object a2) {
         Response r = (Response) done;

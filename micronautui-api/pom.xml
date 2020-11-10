@@ -330,6 +330,11 @@
       <artifactId>micronaut-http-client-core</artifactId>
       <type>jar</type>
     </dependency>
+    <dependency>
+      <artifactId>junit</artifactId>
+      <groupId>junit</groupId>
+      <version>4.11</version>
+    </dependency>
   </dependencies>
   <profiles>
       <profile>
