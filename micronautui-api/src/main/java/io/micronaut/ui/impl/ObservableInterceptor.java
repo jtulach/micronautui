@@ -12,10 +12,10 @@ package io.micronaut.ui.impl;
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -32,6 +32,7 @@ import io.micronaut.context.BeanContext;
 import io.micronaut.context.annotation.Prototype;
 import io.micronaut.core.beans.BeanIntrospection;
 import io.micronaut.core.beans.BeanProperty;
+import java.util.List;
 import javax.inject.Inject;
 import net.java.html.BrwsrCtx;
 import org.netbeans.html.json.spi.Proto;
@@ -42,7 +43,7 @@ public final class ObservableInterceptor<T> implements MethodInterceptor<T, Obje
     MicroHtml4Java<T> micro;
     @Inject
     private BeanContext context;
-    
+
     public ObservableInterceptor() {
     }
 
@@ -76,6 +77,11 @@ public final class ObservableInterceptor<T> implements MethodInterceptor<T, Obje
         if (setterGetter[0]) {
             proto1.valueHasMutated(prop.getName());
         }
+
+        if (List.class.equals(context.getReturnType().getType())) {
+            return ObservableList.wrap(prop.getName(), proto1, (List<?>) res);
+        }
+
         return res;
     }
 }

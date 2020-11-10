@@ -93,8 +93,6 @@ public class Demo {
         item.setTitle(desc);
         item.setDone(false);
         getTodos().add(item);
-        // XXX: ugly refresh...
-        setTodos(getTodos());
         setDesc("");
     }
 
@@ -104,8 +102,6 @@ public class Demo {
         subscribe[0] = client.items().subscribe((newItems) -> {
             getTodos().clear();
             getTodos().addAll(newItems);
-            // XXX: ugly refresh...
-            setTodos(getTodos());
             subscribe[0].dispose();
         });
     }
