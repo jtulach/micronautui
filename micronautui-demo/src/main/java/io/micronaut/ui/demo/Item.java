@@ -32,8 +32,6 @@ import io.micronaut.ui.ObservableUI;
 import java.util.Objects;
 
 @ObservableUI
-// XXX: We have to specify Introspected right now
-@Introspected
 public class Item {
     private String title;
     private boolean done;

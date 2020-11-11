@@ -28,9 +28,7 @@ package io.micronaut.ui.impl;
 
 import io.micronaut.ui.ObservableUI;
 import io.micronaut.context.annotation.Executable;
-import io.micronaut.core.annotation.Introspected;
 
-@Introspected
 @ObservableUI
 public class SampleComponent {
     public SampleComponent() {

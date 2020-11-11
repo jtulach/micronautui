@@ -41,7 +41,6 @@ import net.java.html.json.Models;
 import static net.java.html.json.Models.applyBindings;
 
 @ObservableUI
-@Introspected
 public class Demo {
     private final BeanContext ctx;
     private final TodoClient client;
