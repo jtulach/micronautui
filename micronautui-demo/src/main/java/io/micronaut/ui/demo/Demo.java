@@ -83,6 +83,11 @@ public class Demo {
         return arr;
     }
 
+    @Executable
+    public void cleanUp() {
+        getTodos().removeIf((item) -> item.isDone());
+    }
+
     public void setTodos(List<Item> todos) {
         this.todos = todos;
     }
