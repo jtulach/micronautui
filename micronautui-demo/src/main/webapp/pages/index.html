@@ -68,13 +68,22 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <ul class="col s12 collection" data-bind='foreach: todos'>
-                <li class="collection-item" data-bind="click: changeDone">
-                    <input type="checkbox" class="filled-in" data-bind="checked : done" />
-                    <span data-bind="text: title"></span>
-                </li>
-            </ul>
+        <div class="card">
+            <div class="card-tabs">
+                <ul class="tabs tabs-fixed-width">
+                    <li class="tab" data-bind="click: showAll"><a data-bind="css: { active : activeAll }">All</a></li>
+                    <li class="tab" data-bind="click: showPending"><a data-bind="css: { active : activePending }">Pending</a></li>
+                    <li class="tab" data-bind="click: showDone"><a data-bind="css: { active : activeDone }">Done</a></li>
+                </ul>
+            </div>
+            <div class="card-content">
+                <ul class="col s12 collection" data-bind='foreach: visibleTodos'>
+                    <li class="collection-item" data-bind="click: changeDone">
+                        <input type="checkbox" class="filled-in" data-bind="checked : done" />
+                        <span data-bind="text: title"></span>
+                    </li>
+                </ul>
+            </div>
         </div>
         <!-- ${browser.bootstrap} -->
     </body>

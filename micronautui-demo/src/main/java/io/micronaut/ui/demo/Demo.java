@@ -35,6 +35,7 @@ import io.micronaut.http.client.annotation.Client;
 import io.micronaut.ui.ObservableUI;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import net.java.html.json.Models;
@@ -50,6 +51,7 @@ public class Demo {
 
     private String desc;
     private List<Item> todos = Models.asList();
+    private Show show = Show.ALL;
 
     public String getDesc() {
         return desc;
@@ -65,6 +67,20 @@ public class Demo {
 
     public List<Item> getTodos() {
         return todos;
+    }
+
+    public List<Item> getVisibleTodos() {
+        // XXX: has to call getTodos() and not use todos directly
+        List<Item> arr = new ArrayList<>(getTodos());
+        switch (getShow()) {
+            case DONE:
+                arr.removeIf((item) -> !item.isDone());
+                break;
+            case PENDING:
+                arr.removeIf((item) -> item.isDone());
+                break;
+        }
+        return arr;
     }
 
     public void setTodos(List<Item> todos) {
@@ -106,10 +122,46 @@ public class Demo {
         });
     }
 
+    public Show getShow() {
+        return show;
+    }
+
+    public void setShow(Show show) {
+        this.show = show;
+    }
+
     @Client("http://localhost:8080/todos/")
     public interface TodoClient {
         @Get
         Flowable<List<Item>> items();
+    }
+
+    @Executable
+    void showAll() {
+        setShow(Show.ALL);
+    }
+
+    @Executable
+    void showDone() {
+        setShow(Show.DONE);
+    }
+
+    @Executable
+    void showPending() {
+        setShow(Show.PENDING);
+    }
+
+    public boolean isActiveAll() {
+        // XXX: Have to call getShow() and not use show directly
+        return getShow() == Show.ALL;
+    }
+
+    public boolean isActivePending() {
+        return getShow() == Show.PENDING;
+    }
+
+    public boolean isActiveDone() {
+        return getShow() == Show.DONE;
     }
 
     public static void onPageLoad() {
@@ -118,5 +170,9 @@ public class Demo {
          // XXX: Only calling a setter registers the class as a UI model
         ui.setDesc("Buy Milk");
         applyBindings(ui);
+    }
+
+    public enum Show {
+        ALL, PENDING, DONE
     }
 }
