@@ -77,6 +77,7 @@
     <modules>
         <module>micronautui-api</module>
         <module>micronautui-demo</module>
+        <module>micronautui-web</module>
         <module>micronautui-testing</module>
     </modules>
     
