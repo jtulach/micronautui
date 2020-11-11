@@ -26,6 +26,7 @@ package io.micronaut.ui.demo;
  * #L%
  */
 
+import io.micronaut.context.annotation.Executable;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.ui.ObservableUI;
 import java.util.Objects;
@@ -59,6 +60,11 @@ public class Item {
 
     public void setDone(boolean done) {
         this.done = done;
+    }
+
+    @Executable
+    public void changeDone() {
+        setDone(!isDone());
     }
 
     @Override

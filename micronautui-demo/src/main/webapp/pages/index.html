@@ -70,7 +70,8 @@
         </div>
         <div class="row">
             <ul class="col s12 collection" data-bind='foreach: todos'>
-                <li class="collection-item">
+                <li class="collection-item" data-bind="click: changeDone">
+                    <input type="checkbox" class="filled-in" data-bind="checked : done" />
                     <span data-bind="text: title"></span>
                 </li>
             </ul>
