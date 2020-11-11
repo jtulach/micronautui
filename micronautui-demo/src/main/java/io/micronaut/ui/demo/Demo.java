@@ -37,17 +37,19 @@ import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
 import net.java.html.json.Models;
 import static net.java.html.json.Models.applyBindings;
 
 @ObservableUI
 @Introspected
 public class Demo {
-    @Inject
-    private BeanContext ctx;
-    @Inject
-    private TodoClient client;
+    private final BeanContext ctx;
+    private final TodoClient client;
+
+    Demo(BeanContext ctx, TodoClient client) {
+        this.ctx = ctx;
+        this.client = client;
+    }
 
     private String desc;
     private List<Item> todos = Models.asList();

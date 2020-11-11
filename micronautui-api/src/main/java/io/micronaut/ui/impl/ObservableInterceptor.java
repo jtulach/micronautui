@@ -33,7 +33,6 @@ import io.micronaut.context.annotation.Prototype;
 import io.micronaut.core.beans.BeanIntrospection;
 import io.micronaut.core.beans.BeanProperty;
 import java.util.List;
-import javax.inject.Inject;
 import net.java.html.BrwsrCtx;
 import org.netbeans.html.json.spi.Proto;
 
@@ -41,10 +40,10 @@ import org.netbeans.html.json.spi.Proto;
 public final class ObservableInterceptor<T> implements MethodInterceptor<T, Object> {
     Proto proto;
     MicroHtml4Java<T> micro;
-    @Inject
-    private BeanContext context;
+    private final BeanContext context;
 
-    public ObservableInterceptor() {
+    public ObservableInterceptor(BeanContext context) {
+        this.context = context;
     }
 
     private Proto proto(Class<T> type, T bean) {
