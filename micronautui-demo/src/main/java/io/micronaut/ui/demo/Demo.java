@@ -51,7 +51,7 @@ public class Demo {
         this.client = client;
     }
 
-    private String desc;
+    private String desc = "Buy Milk";
     private List<Item> todos = Models.asList();
     private Show show = Show.ALL;
 
@@ -174,8 +174,6 @@ public class Demo {
     public static void onPageLoad() {
         ApplicationContext ac = ApplicationContext.run();
         Demo ui = ac.getBean(Demo.class);
-         // XXX: Only calling a setter registers the class as a UI model
-        ui.setDesc("Buy Milk");
         applyBindings(ui);
     }
 

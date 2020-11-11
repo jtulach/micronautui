@@ -28,48 +28,34 @@ package io.micronaut.ui.impl;
 
 
 import io.micronaut.aop.MethodInvocationContext;
-import io.micronaut.context.ApplicationContext;
-import io.micronaut.context.BeanContext;
 import io.micronaut.core.beans.BeanIntrospection;
 import io.micronaut.core.beans.BeanProperty;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.ExecutableMethod;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import net.java.html.BrwsrCtx;
 import org.netbeans.html.json.spi.Proto;
 
 final class MicroHtml4Java<T> extends Proto.Type<T> {
     private final BeanIntrospection<T> intro;
     private final List<ExecutableMethod<T, ?>> methods;
-    private static final Map<Class<?>,MicroHtml4Java> TYPES = new HashMap<>();
 
-    synchronized static <T> MicroHtml4Java<T> find(BeanContext context, T bean, Class<T> clazz, BeanIntrospection<T> intro) {
-        MicroHtml4Java<T> data = TYPES.get(clazz);
-        if (data == null) {
-            final Collection<BeanProperty<T, Object>> props = intro.getBeanProperties();
-            final BeanDefinition<T> def = context.getBeanDefinition(intro.getBeanType());
-            final Collection<ExecutableMethod<T, ?>> methods = def.getExecutableMethods();
-            data = new MicroHtml4Java(intro, bean.getClass(), clazz, props.size(), methods);
-            int i = 0;
-            for (BeanProperty<T, Object> p : props) {
-                data.registerProperty(p.getName(), i++, p.isReadOnly());
-            }
-            i = 0;
-            for (ExecutableMethod<T, ?> m : methods) {
-                data.registerFunction(m.getMethodName(), i++);
-            }
-        }
-        return data;
-    }
-
-    MicroHtml4Java(BeanIntrospection<T> intro, Class<? extends T> subclazz, Class<T> clazz, int props, Collection<ExecutableMethod<T, ?>> methods) {
-        super(subclazz, clazz, props, methods.size());
+    MicroHtml4Java(BeanIntrospection<T> intro, Class<? extends T> subclazz, BeanDefinition<T> def) {
+        super(subclazz, subclazz.getSuperclass(), intro.getBeanProperties().size(), def.getExecutableMethods().size());
         this.intro = intro;
-        this.methods = new ArrayList<>(methods);
+        this.methods = new ArrayList<>(def.getExecutableMethods());
+        final Collection<BeanProperty<T, Object>> props = intro.getBeanProperties();
+        final Collection<ExecutableMethod<T, ?>> tmp = def.getExecutableMethods();
+        int i = 0;
+        for (BeanProperty<T, Object> p : props) {
+            registerProperty(p.getName(), i++, p.isReadOnly());
+        }
+        i = 0;
+        for (ExecutableMethod<T, ?> m : tmp) {
+            registerFunction(m.getMethodName(), i++);
+        }
     }
 
     @Override

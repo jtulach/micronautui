@@ -28,9 +28,7 @@ package io.micronaut.ui.impl;
 
 import io.micronaut.aop.MethodInterceptor;
 import io.micronaut.aop.MethodInvocationContext;
-import io.micronaut.context.BeanContext;
 import io.micronaut.context.annotation.Prototype;
-import io.micronaut.core.beans.BeanIntrospection;
 import io.micronaut.core.beans.BeanProperty;
 import java.util.List;
 import net.java.html.BrwsrCtx;
@@ -38,18 +36,17 @@ import org.netbeans.html.json.spi.Proto;
 
 @Prototype
 public final class ObservableInterceptor<T> implements MethodInterceptor<T, Object> {
+    private final RegisterObservableUIs registry;
     Proto proto;
     MicroHtml4Java<T> micro;
-    private final BeanContext context;
 
-    public ObservableInterceptor(BeanContext context) {
-        this.context = context;
+    ObservableInterceptor(RegisterObservableUIs r) {
+        this.registry = r;
     }
 
     private Proto proto(Class<T> type, T bean) {
         if (proto == null) {
-            BeanIntrospection<T> intro = BeanIntrospection.getIntrospection(type);
-            micro = MicroHtml4Java.find(context, bean, type, intro);
+            micro = registry.find((Class) bean.getClass());
             proto = micro.createProto(bean, BrwsrCtx.findDefault(type));
         }
         return proto;
@@ -58,27 +55,27 @@ public final class ObservableInterceptor<T> implements MethodInterceptor<T, Obje
     @Override
     public Object intercept(MethodInvocationContext<T, Object> context) {
         QueryProto qp = QueryProto.handleEqualsQuery(context);
+        final Proto p = proto(context.getDeclaringType(), context.getTarget());
         if (qp != null) {
-            qp.assignProto(proto);
+            qp.assignProto(p);
             return true;
         }
         boolean[] setterGetter = { false, false };
-        final Proto proto1 = proto(context.getDeclaringType(), context.getTarget());
         BeanProperty<? extends Object, Object> prop = micro.findProperty(context, setterGetter);
         if (setterGetter[1]) {
-            proto1.accessProperty(prop.getName());
-            proto1.acquireLock(prop.getName());
+            p.accessProperty(prop.getName());
+            p.acquireLock(prop.getName());
         }
         Object res = context.proceed();
         if (setterGetter[1]) {
-            proto1.releaseLock();
+            p.releaseLock();
         }
         if (setterGetter[0]) {
-            proto1.valueHasMutated(prop.getName());
+            p.valueHasMutated(prop.getName());
         }
 
         if (List.class.equals(context.getReturnType().getType())) {
-            return ObservableList.wrap(prop.getName(), proto1, (List<?>) res);
+            return ObservableList.wrap(prop.getName(), p, (List<?>) res);
         }
 
         return res;
