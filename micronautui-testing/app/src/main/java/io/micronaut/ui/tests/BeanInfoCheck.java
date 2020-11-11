@@ -27,10 +27,8 @@ package io.micronaut.ui.tests;
  */
 
 import io.micronaut.context.ApplicationContext;
-import io.micronaut.context.annotation.Executable;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.ExecutableMethod;
-import io.micronaut.ui.ObservableUI;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
