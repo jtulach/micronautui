@@ -29,7 +29,6 @@ package io.micronaut.ui.demo;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.BeanContext;
 import io.micronaut.context.annotation.Executable;
-import io.micronaut.core.annotation.Introspected;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.ui.ObservableUI;
