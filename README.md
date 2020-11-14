@@ -1,11 +1,13 @@
-# BeanInfo for JavaFX
+# Reactive UI for Micronaut in Java
 
-[![Travis Status](https://travis-ci.org/dukescript/dukescript-javafx.svg?branch=master)](https://travis-ci.org/dukescript/dukescript-javafx)
+Provides `@ObservableUI` annotation - a simple, yet powerful extension
+to [Micronaut](https://micronaut.io/) concepts. It allows one to
+write portable reactive UI applications like 
+[TODO demo](https://github.com/jtulach/micronautui/blob/master/micronautui-demo/src/main/java/io/micronaut/ui/demo/Demo.java).
 
-[FXBeanInfo](https://dukescript.com/javadoc/javafx/) is a simple, yet powerful extension
-to [JavaFX](https://openjfx.io/) libraries to help you easily enumerate properties
-and actions of your beans without using reflection.
+```bash
+micronautui$ JAVA_HOME=/jdk-11/ mvn install -DskipTests
+micronautui$ JAVA_HOME=/jdk-11/ mvn -f micronautui-demo/ -Pdesktop exec:exec
+```
 
-Read more about [FXBeanInfo](https://dukescript.com/javadoc/javafx/)...
-
-
+Share coding concepts and even **code** between your **server** and **client**!
