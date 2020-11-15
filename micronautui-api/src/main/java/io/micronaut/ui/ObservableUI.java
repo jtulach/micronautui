@@ -28,6 +28,7 @@ package io.micronaut.ui;
 
 import io.micronaut.ui.impl.ObservableInterceptor;
 import io.micronaut.aop.Around;
+import io.micronaut.aop.Introduction;
 import io.micronaut.context.annotation.Type;
 import io.micronaut.core.annotation.Introspected;
 import java.lang.annotation.ElementType;
@@ -40,5 +41,8 @@ import java.lang.annotation.Target;
 @Around
 @Type(ObservableInterceptor.class)
 @Introspected
+@Introduction(interfaces = ObservableUI.Inner.class)
 public @interface ObservableUI {
+    public interface Inner {
+    }
 }
