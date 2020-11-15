@@ -1,4 +1,4 @@
-package io.micronaut.ui.impl;
+package io.micronaut.ui;
 
 /*-
  * #%L
@@ -26,44 +26,30 @@ package io.micronaut.ui.impl;
  * #L%
  */
 
-import io.micronaut.aop.MethodInvocationContext;
-import java.lang.reflect.Method;
+import io.micronaut.aop.Around;
+import io.micronaut.aop.Introduction;
+import io.micronaut.context.annotation.Type;
+import io.micronaut.core.annotation.Introspected;
+import io.micronaut.ui.impl.ObservableInterceptor;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import org.netbeans.html.json.spi.Proto;
 
-final class QueryProto {
-    private Proto found;
-    
-    void assignProto(Proto p) {
-        found = p;
-    }
-    
-    static Proto findFor(Object obj) {
-        QueryProto q = new QueryProto();
-        if (obj.equals(q)) {
-            return q.found;
-        } else {
-            return null;
-        }
-    }
-    
-    static <T> QueryProto handleEqualsQuery(MethodInvocationContext<T, Object> context) {
-        if (!"equals".equals(context.getMethodName())) {
-            return null;
-        }
-        final Method m = context.getTargetMethod();
-        if (m.getParameterCount() != 1) {
-            return null;
-        }
-        if (m.getParameterTypes()[0] != Object.class) {
-            return null;
-        }
-        if (m.getReturnType() != boolean.class) {
-            return null;
-        }
-        final Object arg0 = context.getParameterValues()[0];
-        if (arg0 instanceof QueryProto) {
-            return (QueryProto) arg0;
-        }
-        return null;
+public interface Observable {
+    /** Returns {@link Proto} associated with this object.
+     * 
+     * @return non-null proto instance
+     */
+    Proto proto();
+
+    @Retention(value = RetentionPolicy.RUNTIME)
+    @Target(value = {ElementType.TYPE})
+    @Around(proxyTarget = true)
+    @Type(value = ObservableInterceptor.class)
+    @Introspected
+    @Introduction(interfaces = Observable.class)
+    public static @interface UI {
     }
 }

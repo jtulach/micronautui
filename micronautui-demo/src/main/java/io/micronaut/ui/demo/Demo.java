@@ -31,7 +31,7 @@ import io.micronaut.context.BeanContext;
 import io.micronaut.context.annotation.Executable;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.client.annotation.Client;
-import io.micronaut.ui.ObservableUI;
+import io.micronaut.ui.Observable;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ import java.util.List;
 import net.java.html.json.Models;
 import static net.java.html.json.Models.applyBindings;
 
-@ObservableUI
+@Observable.UI
 public class Demo {
     private final BeanContext ctx;
     private final TodoClient client;
@@ -94,13 +94,6 @@ public class Demo {
 
     public int getNumTodos() {
         return getTodos().size();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        // XXX: each @ObservableUI has to override equals right now
-        // XXX: so it is possible to associate a proto field
-        return super.equals(obj);
     }
 
     @Override

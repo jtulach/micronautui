@@ -30,6 +30,7 @@ import io.micronaut.aop.MethodInterceptor;
 import io.micronaut.aop.MethodInvocationContext;
 import io.micronaut.context.annotation.Prototype;
 import io.micronaut.core.beans.BeanProperty;
+import io.micronaut.ui.Observable;
 import java.util.List;
 import net.java.html.BrwsrCtx;
 import org.netbeans.html.json.spi.Proto;
@@ -54,11 +55,9 @@ public final class ObservableInterceptor<T> implements MethodInterceptor<T, Obje
 
     @Override
     public Object intercept(MethodInvocationContext<T, Object> context) {
-        QueryProto qp = QueryProto.handleEqualsQuery(context);
         final Proto p = proto(context.getDeclaringType(), context.getTarget());
-        if (qp != null) {
-            qp.assignProto(p);
-            return true;
+        if (context.getDeclaringType() == Observable.class) {
+            return p;
         }
         boolean[] setterGetter = { false, false };
         BeanProperty<? extends Object, Object> prop = micro.findProperty(context, setterGetter);

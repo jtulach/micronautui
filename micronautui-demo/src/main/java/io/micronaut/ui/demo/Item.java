@@ -27,10 +27,9 @@ package io.micronaut.ui.demo;
  */
 
 import io.micronaut.context.annotation.Executable;
-import io.micronaut.ui.ObservableUI;
-import java.util.Objects;
+import io.micronaut.ui.Observable;
 
-@ObservableUI
+@Observable.UI
 public class Item {
     private String title;
     private boolean done;
@@ -63,33 +62,4 @@ public class Item {
     public void changeDone() {
         setDone(!isDone());
     }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        return hash;
-    }
-
-    // XXX: must generate equals!
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Item other = (Item) obj;
-        if (this.done != other.done) {
-            return false;
-        }
-        if (!Objects.equals(this.title, other.title)) {
-            return false;
-        }
-        return true;
-    }
-
 }

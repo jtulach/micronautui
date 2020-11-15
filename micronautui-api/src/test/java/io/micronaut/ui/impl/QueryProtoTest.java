@@ -27,16 +27,19 @@ package io.micronaut.ui.impl;
  */
 
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.ui.Observable;
+import java.io.IOException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.netbeans.html.json.spi.Proto;
 
 public class QueryProtoTest {
     @Test
-    public void findProtoForABean() {
+    public void findProtoForABean() throws IOException, ClassNotFoundException {
         try (ApplicationContext ctx = ApplicationContext.run()) {
             SampleComponent c = ctx.getBean(SampleComponent.class);
-            Proto p = QueryProto.findFor(c);
+            assertTrue(c instanceof Observable);
+            Proto p = ((Observable) c).proto();
             assertNotNull("Proto for c found", p);
         }
     }

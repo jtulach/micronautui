@@ -32,7 +32,7 @@ import io.micronaut.core.beans.BeanIntrospection;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.runtime.event.annotation.EventListener;
-import io.micronaut.ui.ObservableUI;
+import io.micronaut.ui.Observable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,7 +61,7 @@ public class RegisterObservableUIs {
 
     @EventListener
     synchronized void init(StartupEvent event) {
-        Collection<BeanDefinition<?>> beanDefinitions = ctx.getBeanDefinitions(Qualifiers.byStereotype(ObservableUI.class));
+        Collection<BeanDefinition<?>> beanDefinitions = ctx.getBeanDefinitions(Qualifiers.byStereotype(Observable.UI.class));
         for (BeanDefinition<?> def : beanDefinitions) {
             MicroHtml4Java<?> micro = register(ctx, def);
             TYPES.put(def.getBeanType(), micro);

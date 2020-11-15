@@ -26,10 +26,10 @@ package io.micronaut.ui.impl;
  * #L%
  */
 
-import io.micronaut.ui.ObservableUI;
 import io.micronaut.context.annotation.Executable;
+import io.micronaut.ui.Observable;
 
-@ObservableUI
+@Observable.UI
 public class SampleComponent {
     public SampleComponent() {
     }
@@ -89,12 +89,5 @@ public class SampleComponent {
     }
 
     static void ignore() {
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        // MicroHack: Need a way for a bean to find out one of its interceptors
-        // MicroHack: Using equals(QueryProto) trick
-        return super.equals(obj);
     }
 }

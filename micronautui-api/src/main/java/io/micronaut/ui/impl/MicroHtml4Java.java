@@ -32,6 +32,7 @@ import io.micronaut.core.beans.BeanIntrospection;
 import io.micronaut.core.beans.BeanProperty;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.ExecutableMethod;
+import io.micronaut.ui.Observable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -109,7 +110,7 @@ final class MicroHtml4Java<T> extends Proto.Type<T> {
 
     @Override
     protected Proto protoFor(Object o) {
-        return QueryProto.findFor(o);
+        return o instanceof Observable ? ((Observable) o).proto() : null;
     }
 
     final BeanProperty<T, Object> findProperty(MethodInvocationContext<T, Object> context, boolean[] setterGetter) {

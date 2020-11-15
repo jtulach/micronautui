@@ -27,10 +27,10 @@ package io.micronaut.ui.tests;
  */
 
 import io.micronaut.context.annotation.Executable;
-import io.micronaut.ui.ObservableUI;
+import io.micronaut.ui.Observable;
 
 // BEGIN: io.micronaut.ui.demo.BeanInfoCheck#CountingBean
-@ObservableUI
+@Observable.UI
 public class CountingBean {
     int count;
 
