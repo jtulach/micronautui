@@ -36,8 +36,6 @@ public class QueryProtoTest {
     public void findProtoForABean() {
         try (ApplicationContext ctx = ApplicationContext.run()) {
             SampleComponent c = ctx.getBean(SampleComponent.class);
-            c.setFine("Great!");
-            
             Proto p = QueryProto.findFor(c);
             assertNotNull("Proto for c found", p);
         }
