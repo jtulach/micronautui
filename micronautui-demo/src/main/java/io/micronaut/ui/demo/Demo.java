@@ -49,7 +49,7 @@ public class Demo {
         this.client = client;
     }
 
-    private String desc = "Buy Milk";
+    private String desc;
     private List<Item> todos = Models.asList();
     private Show show = Show.ALL;
 
@@ -162,9 +162,10 @@ public class Demo {
         return getShow() == Show.DONE;
     }
 
-    public static void onPageLoad() {
+    public static void onPageLoad(String[] args) {
         ApplicationContext ac = ApplicationContext.run();
         Demo ui = ac.getBean(Demo.class);
+        ui.setDesc(args.length > 0 ? args[0] : "Buy Milk!");
         applyBindings(ui);
     }
 

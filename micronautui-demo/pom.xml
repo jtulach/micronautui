@@ -47,6 +47,8 @@
     <project.mainclass>io.micronaut.ui.demo.Main</project.mainclass>
     <exec.java.bin>${java.home}/bin/java</exec.java.bin>
     <exec.debug.arg></exec.debug.arg>
+    <exec.vmArgs></exec.vmArgs>
+    <exec.appArgs></exec.appArgs>
     <net.java.html.version>1.7</net.java.html.version>
     <openjfx.version>11</openjfx.version>
     <springloaded.javaagent></springloaded.javaagent>
@@ -88,7 +90,7 @@
                        -Xverify:none${springloaded.javaagent}
                        -Dbrowser.rootdir=${basedir}/src/main/webapp/
                        -Dnetbeans.inspect.port=${netbeans.inspect.port}
-                       ${exec.debug.arg} ${project.mainclass}
+                       ${exec.debug.arg} ${exec.vmArgs} ${project.mainclass} ${exec.appArgs}
                    </commandlineArgs>
                 </configuration>
           </plugin>

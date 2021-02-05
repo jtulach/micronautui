@@ -41,7 +41,7 @@ public final class Main {
         System.exit(0);
     }
 
-    public static void onPageLoad() throws Exception {
-        Demo.onPageLoad();
+    public static void onPageLoad(String[] args) throws Exception {
+        Demo.onPageLoad(args);
     }
 }
