@@ -26,22 +26,11 @@ package io.micronaut.ui.demo;
  * #L%
  */
 
-import net.java.html.boot.BrowserBuilder;
-
 public final class Main {
     private Main() {
     }
 
-    public static void main(String... args) throws Exception {
-        BrowserBuilder.newBrowser().
-            loadPage("pages/index.html").
-            loadClass(Main.class).
-            invoke("onPageLoad", args).
-            showAndWait();
-        System.exit(0);
-    }
-
-    public static void onPageLoad(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         Demo.onPageLoad(args);
     }
 }
