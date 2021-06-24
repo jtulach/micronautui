@@ -301,5 +301,31 @@
                             -->
           </properties>
       </profile>
+      <profile>
+          <id>aotjs</id>
+          <build>
+              <plugins>
+                  <plugin>
+                      <groupId>org.graalvm.aotjs</groupId>
+                      <artifactId>aotjs-maven-plugin</artifactId>
+                      <version>1.0-SNAPSHOT</version>
+                      <executions>
+                          <execution>
+                              <id>generate-aotjs</id>
+                              <goals>
+                                  <goal>aotjs</goal>
+                              </goals>
+                              <phase>process-classes</phase>
+                              <configuration>
+                                  <mainClass>${project.mainclass}</mainClass>
+                                  <targetDirectory>${project.build.directory}/</targetDirectory>
+                                  <imageName>micronautui</imageName>
+                              </configuration>
+                          </execution>
+                      </executions>
+                  </plugin>
+              </plugins>
+          </build>
+      </profile>
   </profiles>
 </project>
